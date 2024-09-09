@@ -50,17 +50,22 @@ cv2.imshow("Warped Image", warped)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-# 画像を保存する場合
-# cv2.imwrite("output_image.png", warped)
+cv2.imwrite("Detect_png.png",warped)
 
-hsv = cv2.cvtColor(warped, cv2.COLOR_BGR2HSV)  # 画像をHSV色空間に変換
-
-# 銀色の範囲を設定 (例: 明るいグレーから暗いグレー)
-lower_silver = np.array([0, 0, 150])
-upper_silver = np.array([180, 50, 255])
-mask_silver = cv2.inRange(hsv, lower_silver, upper_silver)
-result_silver = cv2.bitwise_and(warped, warped, mask=mask_silver)
-
-cv2.imshow("Silver Mask", result_silver)
+img1 = cv2.imread("Detect_png.png",cv2.IMREAD_GRAYSCALE)
+dst_cv = cv2.adaptiveThreshold(img1, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 1001, 50)
+                                                    # 軸目盛、軸ラベルを消す
+                                                  # 1行3列の3番目(右)の領域にプロットを設定
+cv2.imshow("image",dst_cv)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
+cv2.imwrite("image.png",dst_cv)
+
+black_area = np.sum(dst_cv == 0)
+white = np.sum(dst_cv == 255)
+size = black_area + white
+print(size)
+print(black_area, white )
+area = black_area / size * 100
+print(area)
