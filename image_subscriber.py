@@ -27,12 +27,16 @@ class ImageSubscriber(Node):
             # ROS 画像メッセージを OpenCV 画像に変換
             cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
 
+            #画像の処理
             img = detect.resize_func(cv_image)
             warped = detect.extract_test_piece(img,self.points_list)
 
+            #正方形に切り抜いた画像の縦横サイズ
             h,w = warped.shape[:2]
 
+            #面積比計算
             area = detect.adapt(warped)
+            
             # 結果のサイズを計算し、テキストメッセージとしてパブリッシュ
             result_msg = String()
             result_msg.data = f'Width: {w}, Height: {h}, Area: {area}'
